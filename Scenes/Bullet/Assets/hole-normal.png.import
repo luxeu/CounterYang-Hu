@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://byc6edrbpdfog"
-path="res://.godot/imported/hole-normal.png-75b74f6b7ac15b960eaf984774cf63a0.ctex"
+path="res://.godot/imported/hole-normal.png-246c2546df7cee42901b2351aa5c204e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Scenes/Bullet/Assets/hole-normal.png"
-dest_files=["res://.godot/imported/hole-normal.png-75b74f6b7ac15b960eaf984774cf63a0.ctex"]
+source_file="res://scenes/Bullet/Assets/hole-normal.png"
+dest_files=["res://.godot/imported/hole-normal.png-246c2546df7cee42901b2351aa5c204e.ctex"]
 
 [params]
 
