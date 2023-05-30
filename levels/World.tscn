@@ -58,7 +58,8 @@ offset_top = 542.0
 offset_right = 101.0
 offset_bottom = 614.0
 theme = SubResource("Theme_u1fb0")
-text = "HP"
+text = "100
+"
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -115,8 +116,13 @@ light_indirect_energy = 0.884
 light_volumetric_fog_energy = 0.768
 shadow_enabled = true
 
-[node name="BasicBlock3" parent="." instance=ExtResource("3_385fs")]
-transform = Transform3D(2, 0, 0, 0, 5, 0, 0, 0, 30, 12.0086, 2.95161, -0.0307474)
+[node name="Wall2" parent="." instance=ExtResource("3_385fs")]
+transform = Transform3D(2, 0, 0, 0, 5, 0, 0, 0, 30, 24.8584, 2.95161, 19.5267)
+block_color_group = 3
+block_style = 2
+
+[node name="Wall" parent="." instance=ExtResource("3_385fs")]
+transform = Transform3D(2, 0, 0, 0, 5, 0, 0, 0, 30, 24.9275, 3.04373, -19.8614)
 block_color_group = 3
 block_style = 2
 
@@ -127,12 +133,12 @@ transform = Transform3D(100, 0, 0, 0, 1, 0, 0, 0, 100, 0, 0, 0)
 transform = Transform3D(100, 0, 0, 0, 1, 0, 0, 0, 100, 0, 31.5655, 0)
 
 [node name="BasicBlock2" parent="." instance=ExtResource("3_385fs")]
-transform = Transform3D(6.981, 0, 0, 0, 1, 0, 0, 0, 4.093, 5.58332, 0.908197, -22.4728)
+transform = Transform3D(6.981, 0, 0, 0, 1, 0, 0, 0, 4.093, 5.58332, 0.908197, -13.7319)
 block_color_group = 1
 block_style = 2
 
 [node name="CsgPolygon3d" type="CSGPolygon3D" parent="."]
-transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -9.06623, 0.523835, 0.0135)
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 14.2704, 0.523835, 1.41512)
 use_collision = true
 polygon = PackedVector2Array(0, 0, 0, 1, 0, 1, 1, 0)
 material = SubResource("StandardMaterial3D_2gtf0")
