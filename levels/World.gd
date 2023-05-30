@@ -2,8 +2,8 @@ extends Node
 
 @onready var menu = $CanvasLayer/JoinMenu
 @onready var address_entry = $CanvasLayer/JoinMenu/MarginContainer/VBoxContainer/AddressEntry
-#@onready var hud = $CanvasLayer/HUD
-#@onready var health_bar = $CanvasLayer/HUD/HealthBar
+@onready var hud = $HUD
+@onready var health = $HUD/Health
 
 
 const Player = preload("res://scenes/Entities/Player/player.tscn")
@@ -16,7 +16,7 @@ func _unhandled_input(event):
 
 func _on_host_button_pressed():
 	menu.hide()
-	#hud.show()
+	hud.show()
 	
 	enet_peer.create_server(PORT)
 	multiplayer.multiplayer_peer = enet_peer
@@ -29,7 +29,7 @@ func _on_host_button_pressed():
 
 func _on_join_button_pressed():
 	menu.hide()
-	#hud.show()
+	hud.show()
 	
 	enet_peer.create_client(address_entry.text, PORT)
 	multiplayer.multiplayer_peer = enet_peer
@@ -38,8 +38,8 @@ func add_player(peer_id):
 	var player = Player.instantiate()
 	player.name = str(peer_id)
 	add_child(player)
-	#if player.is_multiplayer_authority():
-		#player.health_changed.connect(update_health_bar)
+	if player.is_multiplayer_authority():
+		player.healthChanged.connect(update_health_bar)
 
 func remove_player(peer_id):
 	var player = get_node_or_null(str(peer_id))
@@ -47,7 +47,7 @@ func remove_player(peer_id):
 		player.queue_free()
 
 func update_health_bar(health_value):
-	#health_bar.value = health_value
+	health.text = str(health_value)
 	pass
 
 func _on_multiplayer_spawner_spawned(node):

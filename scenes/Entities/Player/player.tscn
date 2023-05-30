@@ -170,7 +170,6 @@ properties/2/spawn = true
 properties/2/sync = true
 
 [node name="Player" type="CharacterBody3D"]
-collision_layer = 2
 script = ExtResource("1_mwur6")
 _bullet_scene = ExtResource("2_aihiv")
 
@@ -212,3 +211,5 @@ libraries = {
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_q0dlq")
+
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]

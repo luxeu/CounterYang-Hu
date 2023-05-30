@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://ctahsvj88g1om"]
+[gd_scene load_steps=11 format=3 uid="uid://ctahsvj88g1om"]
 
 [ext_resource type="Script" path="res://levels/World.gd" id="1_7qrn3"]
 [ext_resource type="Texture2D" uid="uid://cti411xhon4lt" path="res://crosshair.png" id="2_8uoah"]
@@ -15,6 +15,12 @@ background_mode = 2
 background_color = Color(0.2139, 0.570975, 0.69, 1)
 sky = SubResource("Sky_ivwug")
 
+[sub_resource type="SystemFont" id="SystemFont_2xujb"]
+
+[sub_resource type="Theme" id="Theme_u1fb0"]
+default_font = SubResource("SystemFont_2xujb")
+default_font_size = 50
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2gtf0"]
 albedo_texture = ExtResource("5_0it1n")
 uv1_scale = Vector3(3, 3, 3)
@@ -26,7 +32,8 @@ script = ExtResource("1_7qrn3")
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_l5pxq")
 
-[node name="HUD" type="Control" parent="WorldEnvironment"]
+[node name="HUD" type="Control" parent="."]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -35,7 +42,7 @@ grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(576, 324)
 
-[node name="TextureRect" type="TextureRect" parent="WorldEnvironment/HUD"]
+[node name="TextureRect" type="TextureRect" parent="HUD"]
 layout_mode = 0
 offset_right = 1152.0
 offset_bottom = 648.0
@@ -43,6 +50,15 @@ scale = Vector2(0.2, 0.2)
 pivot_offset = Vector2(576, 324)
 texture = ExtResource("2_8uoah")
 stretch_mode = 5
+
+[node name="Health" type="Label" parent="HUD"]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 542.0
+offset_right = 101.0
+offset_bottom = 614.0
+theme = SubResource("Theme_u1fb0")
+text = "HP"
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -106,6 +122,9 @@ block_style = 2
 
 [node name="BasicBlock" parent="." instance=ExtResource("3_385fs")]
 transform = Transform3D(100, 0, 0, 0, 1, 0, 0, 0, 100, 0, 0, 0)
+
+[node name="BasicBlock6" parent="." instance=ExtResource("3_385fs")]
+transform = Transform3D(100, 0, 0, 0, 1, 0, 0, 0, 100, 0, 31.5655, 0)
 
 [node name="BasicBlock2" parent="." instance=ExtResource("3_385fs")]
 transform = Transform3D(6.981, 0, 0, 0, 1, 0, 0, 0, 4.093, 5.58332, 0.908197, -22.4728)

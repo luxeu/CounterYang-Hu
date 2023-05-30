@@ -1,4 +1,7 @@
+class_name Player
 extends CharacterBody3D
+
+signal healthChanged(health_value)
 
 @onready var gunRay = $Head/Camera3d/RayCast3d as RayCast3D
 @onready var Cam = $Head/Camera3d as Camera3D
@@ -129,12 +132,22 @@ func _input(event):
 func shoot():
 	if not gunRay.is_colliding():
 		return
+	elif gunRay.get_collider().get_class() == "CharacterBody3D":
+		var hit_player = gunRay.get_collider()
+		hit_player.receiveDmg.rpc_id(hit_player.get_multiplayer_authority())
 	var bulletInst = _bullet_scene.instantiate() as Node3D
 	bulletInst.set_as_top_level(true)
 	get_parent().add_child(bulletInst)
 	bulletInst.global_transform.origin = gunRay.get_collision_point() as Vector3
 	bulletInst.look_at((gunRay.get_collision_point()+gunRay.get_collision_normal()),Vector3.BACK)
 
+@rpc("any_peer")
+func receiveDmg():
+	health -= 30
+	healthChanged.emit(health)
+	if health <= 0:
+		queue_free()
 
 func _on_animation_player_animation_finished(anim_name):
-	pass # Replace with function body.
+	if anim_name == "shoot":
+		animation.play("Idle")
