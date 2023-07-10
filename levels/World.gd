@@ -5,7 +5,6 @@ extends Node
 @onready var hud = $HUD
 @onready var health = $HUD/Health
 
-
 const Player = preload("res://scenes/Entities/Player/player.tscn")
 const PORT = 9999
 var enet_peer = ENetMultiplayerPeer.new()

@@ -1,13 +1,19 @@
-[gd_scene load_steps=18 format=3 uid="uid://7gv6q50fuutj"]
+[gd_scene load_steps=26 format=3 uid="uid://7gv6q50fuutj"]
 
-[ext_resource type="Script" path="res://scenes/Entities/Player/player.gd" id="1_mwur6"]
-[ext_resource type="PackedScene" uid="uid://dbduds4bsaaby" path="res://scenes/Bullet/Bullet.tscn" id="2_aihiv"]
-[ext_resource type="PackedScene" uid="uid://cvh3486pjjbt2" path="res://gun.blend" id="3_m5050"]
-[ext_resource type="Texture2D" uid="uid://c43bjpfl8ejcr" path="res://addons/kenney_particle_pack/magic_05.png" id="4_p6572"]
+[ext_resource type="Script" path="res://scenes/Entities/Player/Player.gd" id="1_ue6lq"]
+[ext_resource type="PackedScene" uid="uid://dbduds4bsaaby" path="res://scenes/Bullet/Bullet.tscn" id="2_1r87n"]
+[ext_resource type="PackedScene" uid="uid://cdqsbq4islol2" path="res://blade.blend" id="3_acyyt"]
+[ext_resource type="PackedScene" uid="uid://cvh3486pjjbt2" path="res://gun.blend" id="4_fl4tj"]
+[ext_resource type="Script" path="res://Melee.gd" id="4_p6pmn"]
+[ext_resource type="Texture2D" uid="uid://c43bjpfl8ejcr" path="res://addons/kenney_particle_pack/magic_05.png" id="5_q8vrv"]
+[ext_resource type="Script" path="res://Gun.gd" id="6_brqiq"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_emkox"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_6b3ky"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fe5a5"]
+size = Vector3(5.93204, 9.7966, 4.71852)
 
 [sub_resource type="Gradient" id="Gradient_a8kum"]
 offsets = PackedFloat32Array(0, 0.178862, 1)
@@ -27,7 +33,7 @@ transparency = 1
 shading_mode = 0
 vertex_color_use_as_albedo = true
 albedo_color = Color(1, 1, 0.768627, 1)
-albedo_texture = ExtResource("4_p6572")
+albedo_texture = ExtResource("5_q8vrv")
 billboard_mode = 3
 particles_anim_h_frames = 1
 particles_anim_v_frames = 1
@@ -158,6 +164,58 @@ _data = {
 "shoot": SubResource("Animation_2ipb7")
 }
 
+[sub_resource type="Animation" id="Animation_52mpy"]
+resource_name = "Attack"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Head/Camera3d/Melee:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(-9.71904e-09, -2.93711, 1.55011), Vector3(5.92539, -2.93739, 1.54985)]
+}
+
+[sub_resource type="Animation" id="Animation_avm4s"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Head/Camera3d/Melee:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(-9.71904e-09, -2.93711, 1.55011)]
+}
+
+[sub_resource type="Animation" id="Animation_ajliu"]
+resource_name = "Return"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Head/Camera3d/Melee:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(5.92539, -2.93739, 1.54985), Vector3(-9.71904e-09, -2.93711, 1.55011)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_0y6ge"]
+_data = {
+"Attack": SubResource("Animation_52mpy"),
+"RESET": SubResource("Animation_avm4s"),
+"Return": SubResource("Animation_ajliu")
+}
+
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_q0dlq"]
 properties/0/path = NodePath(".:position")
 properties/0/spawn = true
@@ -170,8 +228,9 @@ properties/2/spawn = true
 properties/2/sync = true
 
 [node name="Player" type="CharacterBody3D"]
-script = ExtResource("1_mwur6")
-_bullet_scene = ExtResource("2_aihiv")
+script = ExtResource("1_ue6lq")
+spray_vectors = Array[Vector2]([Vector2(0, 0), Vector2(0.04, 0.06), Vector2(1, 2.1), Vector2(1, 3.1), Vector2(-1.3, 2.8), Vector2(1.5, 2.2), Vector2(0, 0), Vector2(0, 0), Vector2(0, 0), Vector2(0, 0)])
+_bullet_scene = ExtResource("2_1r87n")
 
 [node name="CollisionShape3d" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_emkox")
@@ -189,8 +248,21 @@ fov = 90.0
 transform = Transform3D(2.98023e-08, 0, 1, 0, 1, 0, -1, 0, 2.98023e-08, 0, -0.00588068, 0.463024)
 target_position = Vector3(60, 0, 0)
 
-[node name="Gun" parent="Head/Camera3d" instance=ExtResource("3_m5050")]
+[node name="Melee" parent="Head/Camera3d" instance=ExtResource("3_acyyt")]
+transform = Transform3D(-0.00303809, 0.146844, -0.0304591, 0.149968, 0.00310274, 1.45786e-09, 0.000630044, -0.0304527, -0.146875, 0.599129, -0.473747, -1.51648)
+script = ExtResource("4_p6pmn")
+
+[node name="Hitbox" type="Area3D" parent="Head/Camera3d/Melee"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Head/Camera3d/Melee/Hitbox"]
+transform = Transform3D(0.050519, 0.99866, -0.0114248, 0.975177, -0.0517944, -0.215272, -0.215575, -0.000265793, -0.976488, -0.707567, -3.55433, 2.47308)
+shape = SubResource("BoxShape3D_fe5a5")
+
+[node name="Gun" parent="Head/Camera3d" instance=ExtResource("4_fl4tj")]
 transform = Transform3D(0.099854, -8.3819e-10, 0.00540091, 0.000923001, 0.0985289, -0.0170648, -0.00532146, 0.0170897, 0.0983851, 0.524021, -0.296738, -0.588133)
+visible = false
+script = ExtResource("6_brqiq")
+spray_vectors = null
 
 [node name="Flash" type="GPUParticles3D" parent="Head/Camera3d/Gun"]
 transform = Transform3D(0.999996, -1.95578e-08, 1.49012e-08, -5.58794e-09, 0.999996, 2.98023e-08, -7.45058e-09, 2.98023e-08, 0.999995, 0.583514, 1.94853, -5.13414)
@@ -202,14 +274,19 @@ local_coords = true
 process_material = SubResource("ParticleProcessMaterial_wgo34")
 draw_pass_1 = SubResource("PlaneMesh_vi7p2")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+[node name="GunAttack" type="AnimationPlayer" parent="."]
 autoplay = "move"
 playback_default_blend_time = 0.05
 libraries = {
 "": SubResource("AnimationLibrary_mkd0e")
 }
 
+[node name="MeleeAttack" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_0y6ge")
+}
+
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_q0dlq")
 
-[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
+[connection signal="animation_finished" from="GunAttack" to="." method="_on_animation_player_animation_finished"]

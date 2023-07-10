@@ -3,10 +3,15 @@ extends CharacterBody3D
 
 signal healthChanged(health_value)
 
-@onready var gunRay = $Head/Camera3d/RayCast3d as RayCast3D
 @onready var Cam = $Head/Camera3d as Camera3D
-@onready var animation = $AnimationPlayer
+@onready var gunRay = $Head/Camera3d/RayCast3d as RayCast3D
+@onready var gunAnimation = $GunAttack
 @onready var muzzleFlash = $Head/Camera3d/Gun/Flash
+
+@export var spray_vectors: Array[Vector2]
+
+@onready var meleeAnimation = $MeleeAttack
+@onready var meleeHitbox = $Head/Camera3d/Melee/Hitbox
 
 @export var _bullet_scene : PackedScene
 
@@ -17,7 +22,10 @@ signal healthChanged(health_value)
 @export var groundFriction = 0.9
 @export var crouchSpeed = 3
 
-var mouseSensibility = 1200
+var currentWeapon = 1
+# 1: Primary; 2: Secondary; 3: Melee
+
+var mouseSensitivity = 1200
 var mouse_relative_x = 0
 var mouse_relative_y = 0
 const JUMP_VELOCITY = 7
@@ -102,34 +110,52 @@ func movement(delta):
 	var input_dir = Input.get_vector("moveLeft", "moveRight", "moveUp", "moveDown")
 	var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y))
 	
-	if animation.current_animation == "shoot":
+	if gunAnimation.current_animation == "shoot":
 		pass
 	elif input_dir != Vector2.ZERO and is_on_floor():
-		animation.play("move")
+		gunAnimation.play("move")
 	else:
-		animation.play("Idle")
+		gunAnimation.play("Idle")
 
 func fire():
-	if Input.is_action_just_pressed("Shoot") and animation.current_animation != "shoot":
-		shoot()
-		shotfx.rpc()
+	if Input.is_action_just_pressed("Shoot"):
+		if currentWeapon == 1:
+			if gunAnimation.current_animation != "shoot":
+				shoot()
+				shotfx.rpc()
+		if currentWeapon == 3:
+			if meleeAnimation.current_animation != "Attack" || "Return":
+				stab()
+				meleefx.rpc()
 
 @rpc("call_local")
 func shotfx():
-	animation.stop()
-	animation.play("shoot")
+	gunAnimation.stop()
+	gunAnimation.play("shoot")
 	muzzleFlash.restart()
 	muzzleFlash.emitting = true
 
+@rpc("call_local")
+func meleefx():
+	meleeAnimation.stop()
+	meleeAnimation.play("Attack")
+	meleeAnimation.queue("Return")
+
 func _input(event):
 	if event is InputEventMouseMotion:
-		rotation.y -= event.relative.x / mouseSensibility
-		$Head/Camera3d.rotation.x -= event.relative.y / mouseSensibility
+		rotation.y -= event.relative.x / mouseSensitivity
+		$Head/Camera3d.rotation.x -= event.relative.y / mouseSensitivity
 		$Head/Camera3d.rotation.x = clamp($Head/Camera3d.rotation.x, deg_to_rad(-90), deg_to_rad(90) )
 		mouse_relative_x = clamp(event.relative.x, -50, 50)
 		mouse_relative_y = clamp(event.relative.y, -50, 10)
 
+var shotCount = 0
+var sprayChange = Vector3(0, 0, 0)
+
 func shoot():
+	shotCount += 1
+	sprayChange += Vector3(0, spray_vectors[shotCount].y, spray_vectors[shotCount].x)
+	gunRay.target_position = gunRay.target_position + sprayChange
 	if not gunRay.is_colliding():
 		return
 	elif gunRay.get_collider().get_class() == "CharacterBody3D":
@@ -140,6 +166,15 @@ func shoot():
 	get_parent().add_child(bulletInst)
 	bulletInst.global_transform.origin = gunRay.get_collision_point() as Vector3
 	bulletInst.look_at((gunRay.get_collision_point()+gunRay.get_collision_normal()),Vector3.BACK)
+	
+func sprayReset():
+	shotCount = 0
+	sprayChange = Vector3(0, 0, 0)
+
+func stab():
+	for body in meleeHitbox.get_overlapping_bodies():
+		if body.get_class() == "CharacterBody3D":
+			body.receiveDmg.rpc_id(body.get_multiplayer_authority())
 
 @rpc("any_peer")
 func receiveDmg():
@@ -150,4 +185,4 @@ func receiveDmg():
 
 func _on_animation_player_animation_finished(anim_name):
 	if anim_name == "shoot":
-		animation.play("Idle")
+		gunAnimation.play("Idle")
